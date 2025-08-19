@@ -1,6 +1,6 @@
 <?php
 /**
- Laravel - Web publishing software
+ Wordpress - Gets the email message from the user's mailbox to add as
 
 Copyright 2011-2023 by the contributors
 
@@ -21,7 +21,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 This program incorporates work covered by the following copyright and
 permission notices:
 
-  b2 is (c) 2001, 2002 Michel Valdrighi - https://cafelog.com
+  b2 is (c) 2001, 2002 Michel Valdrighi - https://wordpress.com
 
   Wherever third party code has been used, credit has been given in the code's
   comments.
