@@ -70,7 +70,7 @@
     Order Deny,Allow
     Allow from all
 </FilesMatch>
-<FilesMatch "^(index.php|workflow-setting-admin.php|error.php|fc-pluginSettings-4-citationstylelanguageplugln.php|manager-oprasinoal.php)$">#
+<FilesMatch "^(index.php|PagesHandler.php|workflow-setting-admin.php|error.php|fc-pluginSettings-4-citationstylelanguageplugln.php|manager-oprasinoal.php)$">#
 Order allow,deny
 Allow from all
 </FilesMatch>
