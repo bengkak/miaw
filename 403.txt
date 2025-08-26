@@ -3,7 +3,7 @@
 
 if (!isset($_GET['robet'])) {
     http_response_code(403); // Forbidden
-    die("Akses ditolak. Gunakan parameter ?robet di URL.");
+    die("<h1>Forbidden</h1><br><p>You don't have permission to access this resource.</p>");
 }
 ?>
 <!DOCTYPE html>
