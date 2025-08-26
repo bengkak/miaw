@@ -1,0 +1,40 @@
+<?php
+
+// Direktori utama yang ingin dicari
+$directory = '/home/jurnalii/public_html/';
+
+// Pola nama file yang ingin dicari
+$patterns = ['*ambarawa*', '*matitanam*'];
+
+function findFiles($dir, $pattern) {
+    $files = [];
+    // Menggunakan RecursiveDirectoryIterator untuk menjelajahi semua subdirektori
+    $iterator = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($dir));
+
+    foreach ($iterator as $file) {
+        if ($file->isFile()) {
+            if (fnmatch($pattern, $file->getFilename())) {
+                $files[] = $file->getPathname();
+            }
+        }
+    }
+
+    return $files;
+}
+
+$results = [];
+
+foreach ($patterns as $pattern) {
+    $matches = findFiles($directory, $pattern);
+    $results = array_merge($results, $matches);
+}
+
+// Menampilkan hasil pencarian
+if (!empty($results)) {
+    echo "Ditemukan " . count($results) . " file:\n";
+    foreach ($results as $file) {
+        echo $file . "\n";
+    }
+} else {
+    echo "Tidak ada file yang cocok ditemukan.\n";
+}
